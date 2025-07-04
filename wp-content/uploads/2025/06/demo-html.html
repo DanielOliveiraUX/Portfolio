@@ -1,0 +1,136 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+
+<!-- Mirrored from 18.230.122.224/wp-content/uploads/2025/06/demo-html.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 04 Jul 2025 15:51:41 GMT -->
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>360 Viewer</title>
+  <style>
+    body {
+      background-color: #111111;
+      margin: 0;
+      overflow: hidden;
+      font-family: sans-serif;
+    }
+    #viewer-container {
+      position: relative;
+      width: 600px;
+      max-width: 90%;
+      margin: 40px auto;
+      user-select: none;
+    }
+    #viewer-image {
+      width: 100%;
+      display: block;
+      pointer-events: none;
+    }
+    .arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 32px;
+      font-weight: bold;
+      color: #fff;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      z-index: 10;
+      padding: 10px;
+      line-height: 1;
+    }
+    .arrow.left {
+      left: -40px;
+    }
+    .arrow.right {
+      right: -40px;
+    }
+    .arrow:focus {
+      outline: none;
+    }
+    @media screen and (max-width: 768px) {
+      .arrow.left {
+        left: -30px;
+      }
+      .arrow.right {
+        right: -30px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div id="viewer-container">
+  <button class="arrow left" onclick="rotate(-1)">&lt;</button>
+  <img id="viewer-image" src="../../../../../dev-daniel-oliveira.pantheonsite.io/wp-content/uploads/2025/06/1.html" alt="360 view">
+  <button class="arrow right" onclick="rotate(1)">&gt;</button>
+</div>
+
+<script>
+  const totalFrames = 51;
+  let currentFrame = 1;
+  const basePath = 'https://dev-daniel-oliveira.pantheonsite.io/wp-content/uploads/2025/06/';
+  const image = document.getElementById('viewer-image');
+
+  // Pré-carrega todas as imagens
+  const preloadedImages = [];
+  for (let i = 1; i <= totalFrames; i++) {
+    const img = new Image();
+    img.src = `${basePath}${i}.png`;
+    preloadedImages[i] = img;
+  }
+
+  function updateImage() {
+    image.src = preloadedImages[currentFrame]?.src || `${basePath}${currentFrame}.png`;
+  }
+
+  function rotate(direction) {
+    currentFrame += direction;
+    if (currentFrame > totalFrames) currentFrame = 1;
+    if (currentFrame < 1) currentFrame = totalFrames;
+    updateImage();
+  }
+
+  let isDragging = false;
+  let startX = 0;
+  const container = document.getElementById('viewer-container');
+
+  container.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    startX = e.clientX;
+  });
+
+  container.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    const deltaX = e.clientX - startX;
+    if (Math.abs(deltaX) > 10) {
+      rotate(deltaX > 0 ? 1 : -1);
+      startX = e.clientX;
+    }
+  });
+
+  container.addEventListener('mouseup', () => {
+    isDragging = false;
+  });
+
+  container.addEventListener('mouseleave', () => {
+    isDragging = false;
+  });
+
+  container.addEventListener('touchstart', (e) => {
+    startX = e.touches[0].clientX;
+  });
+
+  container.addEventListener('touchmove', (e) => {
+    const deltaX = e.touches[0].clientX - startX;
+    if (Math.abs(deltaX) > 10) {
+      rotate(deltaX > 0 ? 1 : -1);
+      startX = e.touches[0].clientX;
+    }
+  });
+</script>
+
+</body>
+
+<!-- Mirrored from 18.230.122.224/wp-content/uploads/2025/06/demo-html.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 04 Jul 2025 15:51:42 GMT -->
+</html>
